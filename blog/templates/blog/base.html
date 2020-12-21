@@ -1,0 +1,25 @@
+{% load static %}
+<!--this tells django to load staticfiles template tags provide by 
+  django.contrib.staticfiles app in settings 
+-->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <!-- the block tag defines a block that gets overwritten by the child-->
+    <link href="{% static "css/blog.css" %}" rel ="stylesheet">
+</head>
+<body>
+  <div id="container">
+  <div id="content">
+    {% block content %}
+    {% endblock %}
+  </div>
+  <div id="sidebar">
+    <h2>My blog</h2>
+    <p>This is Devoure's  blog.</p>
+  </div>
+  </div>
+</body>  
+</html>
+

@@ -1,7 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
 # Create your models here.
 
@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 class CustomManager(models.Manager):
     def get_queryset(self):
         return super(CustomManager, self).get_queryset()\
-            .filter(status='d')
+            .filter(status='p')
 
 class Post(models.Model):
     STATUS_CHOICES =[

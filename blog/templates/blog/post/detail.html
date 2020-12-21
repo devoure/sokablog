@@ -1,0 +1,10 @@
+{% extends "blog/base.html" %}
+{% block title %}{{post.title}}{% endblock %}
+{% block content %}
+<h1>Soka blog</h1>
+<h2>{{post.title}}</h2>
+<p style="color:red"><i>
+Published {{post.publish}} by {{post.author}}
+</p></i>
+{{ post.body|linebreaks }}
+{% endblock %}
