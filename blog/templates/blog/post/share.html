@@ -1,0 +1,20 @@
+{% extends "blog/base.html" %}
+{% block title %}{{post.title}}{% endblock %}
+{% block content %}
+<h1>Soka blog </h1>
+<h2>{{post.title}}</h2>
+{% if sent %}
+<h3>Email was sent successfully</h3>
+<p>
+<u>"{{post.title}}"</u> was successfully sent to {{cd.to}}.
+</p>
+{% else %}
+<h3>Share "{{post.title}}" by email</h3>
+<form action="." method="post">
+  {{form.as_p}}
+  {% csrf_token %}
+  <input type="submit" value="Send e-mail">
+
+  </form>
+  {% endif %}
+  {% endblock %}
