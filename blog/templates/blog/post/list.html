@@ -12,6 +12,7 @@
 <i> Published {{ post.publish }} by {{ post.author }}</i>
 </p>
 {{ post.body|truncatewords:30|linebreaks }}
+<h3>{{post.comments.count}} comment{{ post.comments|pluralize }}</h3>
 {% endfor %}
 
 {% include "blog/pagination.html" with page=posts %}

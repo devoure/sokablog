@@ -1,15 +1,16 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Post
+from .models import Post, Comment
 from django.core.paginator import Paginator,EmptyPage,\
     PageNotAnInteger
-from .forms import EmailPostForm
+from .forms import EmailPostForm, CommentForm
 from django.core.mail import send_mail
-
+from django.http import HttpResponseRedirect
+from django.contrib import messages
 # Create your views here.
 #view for retrieving all the post
 def post_list(request):
     object_list=Post.my_manager.all()
-    paginator=Paginator(object_list, 1)#3 posts in each page
+    paginator=Paginator(object_list, 1)#1 posts in each page
     page = request.GET.get('page')
     try:
         posts = paginator.page(page)
@@ -23,7 +24,7 @@ def post_list(request):
     return render(request,
                   'blog/post/list.html',
                   {'page':page,
-                  'posts':posts})
+                   'posts':posts})
 
 
 #view for displacing a single post
@@ -33,7 +34,25 @@ def post_detail(request, year, month, day, post):
                              publish__year=year,
                              publish__month=month,
                              publish__day=day)
-    return render(request,'blog/post/detail.html',{'post':post})
+    comments = post.comments.filter(active=True)
+
+    if request.method == 'POST':
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            new_comment=comment_form.save(commit=False)
+            #created an instance with saved content but dont save to database just yet
+            new_comment.post = post
+            #updated the post field in model Comment
+            #linked the comment to a post
+            new_comment.save()
+            #saved the comment to database now
+            messages.add_message(request, messages.INFO, 'Comment posted successfully')
+            return HttpResponseRedirect('')
+    else:
+        comment_form = CommentForm()
+    return render(request,'blog/post/detail.html',{'post':post,
+                                                   'comments':comments,
+                                                   'comment_form':comment_form})
 
 def post_share (request, post_id):
     #retrieve post by id
