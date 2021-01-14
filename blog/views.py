@@ -7,6 +7,8 @@ from django.core.mail import send_mail
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from taggit.models import Tag
+from django.db.models import Count
+
 # Create your views here.
 #view for retrieving all the post
 def post_list(request, tag_slug=None):
@@ -34,7 +36,7 @@ def post_list(request, tag_slug=None):
 
 
 #view for displacing a single post
-def post_detail(request, year, month, day, post):
+def post_detail(request, year, month, day, post, tag_slug=None):
     post = get_object_or_404(Post, slug=post,
                              status='p',
                              publish__year=year,
@@ -56,9 +58,22 @@ def post_detail(request, year, month, day, post):
             return HttpResponseRedirect('')
     else:
         comment_form = CommentForm()
+    tag=None
+    if tag_slug:
+        tag=get_object_or_404(Tag, slug=tag_slug)
+        objects=Post.my_manager.all()
+        objects=objects.filter(tags__in=[tag])
+    post_tags_ids = post.tags.values_list('id', flat=True)
+    #flat=true will not return a tuple([1,2]) rather a flat list[1,2]
+    similar_posts =Post.my_manager.filter(tags__in=post_tags_ids)\
+        .exclude(id=post.id)
+    similar_posts = similar_posts.annotate(same_tags=Count('tags'))\
+        .order_by('-same_tags', '-publish')[:4]
     return render(request,'blog/post/detail.html',{'post':post,
                                                    'comments':comments,
-                                                   'comment_form':comment_form})
+                                                   'comment_form':comment_form,
+                                                   'similar_posts':similar_posts,
+                                                   'tag':tag})
 
 def post_share (request, post_id):
     #retrieve post by id
