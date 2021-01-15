@@ -1,4 +1,5 @@
 {% extends "blog/base.html" %}
+{% load blog_tags %}
 {% block title %}Soka Blog{% endblock %}
 {% block content %}
 <h1>Soka Blog</h1>
@@ -15,7 +16,7 @@
 <p style="color:red">
 <i> Published {{ post.publish }} by {{ post.author }}</i>
 </p>
-{{ post.body|truncatewords:30|linebreaks }}
+{{ post.body|markdown|truncatewords_html:30 }}
 <h3>{{post.comments.count}} comment{{ post.comments|pluralize }}</h3>
 <p>Tags:
 {% for tag in post.tags.all %}
