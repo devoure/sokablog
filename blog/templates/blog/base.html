@@ -18,8 +18,12 @@
   </div>
   <div id="sidebar">
     <h2>My blog</h2>
+  <h3 style="color:blue"><b><a href="{% url "blog:post_search" %}">Search
+    </h3></b>
     <p>This is Devoure's  blog.<br>
     I've written {% total_posts %} posts so far.</p>
+    <h4 style="color:blue"><i><a href="{% url "blog:post_feed" %}">Subcribe to
+          my RSS feed</a></h4></i>
     <h3>Latest posts:<br></h3>
     {% show_latest_posts 4 %}
     <h3>Most commented posts:</br></h3>

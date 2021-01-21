@@ -13,3 +13,7 @@ class CommentForm(forms.ModelForm):
         fields = ('name', 'email', 'body')
         #We are define the fields we want to display on the form
 
+class SearchForm(forms.Form):
+    query = forms.CharField()
+
+
