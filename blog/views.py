@@ -8,7 +8,7 @@ from django.http import HttpResponseRedirect
 from django.contrib import messages
 from taggit.models import Tag
 from django.db.models import Count
-from django.contrib.postgres.search import SearchVector
+from django.contrib.postgres.search import TrigramSimilarity
 
 
 # Create your views here.
@@ -108,8 +108,7 @@ def post_search(request):
         form=SearchForm(request.GET)
         if form.is_valid():
             query = form.cleaned_data['query']
-            results=Post.my_manager.annotate(search=SearchVector('title',
-                'body')).filter(search=query)
+            results=Post.my_manager.annotate(similarity=TrigramSimilarity('title',query)).filter(similarity__gt=0.1).order_by('-similarity')
     return render(request, 'blog/post/search.html',{'form':form,
                                                     'query':query,
                                                     'results':results,})
